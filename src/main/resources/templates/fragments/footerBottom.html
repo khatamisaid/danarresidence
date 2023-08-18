@@ -1,0 +1,14 @@
+<div th:fragment="footerBottom" class="site-footer__bottom">
+    <div class="site-footer__bottom-inner">
+        <div class="site-footer__bottom-left">
+            <p class="site-footer__bottom-text">© All Copyright 2022 by <a
+                    th:href="@{/}" th:text="${#strings.replace(#strings.toLowerCase(website.websiteName), ' ', '')} + '.com'">danarresidence.com</a>
+            </p>
+        </div>
+        <div class="site-footer__bottom-right">
+            <div class="site-footer__social">
+                <img th:src="@{/images/positivessl_trust_seal_lg_222x54.png}" alt="" srcset="">
+            </div>
+        </div>
+    </div>
+</div>

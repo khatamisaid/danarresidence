@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title th:text="${website.websiteName + ' | CMS'} "></title>
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed&family=Gilda+Display&display=swap">
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/plugins.css}" />
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/style6.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .dataTables_wrapper label select {
+            width: 160px;
+            max-width: 100%;
+            height: 35px;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <!-- Preloader -->
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader"> <span></span> </div>
+        </div>
+    </div>
+    <!-- Progress scroll totop -->
+    <div class="progress-wrap cursor-pointer">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+    </div>
+    <!-- Sidebar Section -->
+    <a href="#" class="js-cappa-nav-toggle cappa-nav-toggle"><i></i></a>
+    <div th:replace="admin/fragments/aside :: sidebar"></div>
+    <!-- Main -->
+    <div id="cappa-main">
+        <section class="section-padding">
+            <div class="container">
+                <div style="background-color: white; border-color: #aa8453;" class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <h2 style="color: #aa8453;">Video Animasi</h2>
+                        </div>
+                        <div class="d-flex flex-row justify-content-end mb-2">
+                            <label
+                                style="font-weight: 600; cursor: pointer; color: white; background-color: #aa8453; padding: 8px; border-radius: 8px;"
+                                for="video">Ganti Video</label>
+                            <input style="display: none;" type="file" name="foto"
+                                th:attr="onchange=|changeVideo('${website.idWebsite}')|" id="video"
+                                class="custom-file-input" accept="video/mp4">
+                        </div>
+                        <section class="video-wrapper video section-padding bg-img bg-fixed" data-overlay-dark="3"
+                            data-background="/images/backgroundvideo.jpg">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-8 offset-md-2 text-center">
+                                        <div class="section-title"><span th:text="${website.websiteName}"></span></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-md-12">
+                                        <a href="#headerPopup" id="headerVideoLink" target="_blank" class="vid">
+                                            <div class="vid-butn">
+                                                <span class="icon">
+                                                    <i class="ti-control-play"></i>
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div id="headerPopup" class="mfp-hide embed-responsive embed-responsive-21by9">
+                                        <video id="videoPopUp" width="100%" controls>
+                                            <source th:src="${websiteVideo}" type="video/mp4" />
+                                            Your browser does not support HTML video.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="modalLoading" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="preloader-position loader"> <span></span> </div>
+                    <h4 style="color: #aa8453; text-align: center; margin-top: 12px;">Mohon tunggu</h4>
+                    <h4 style="color: #aa8453; text-align: center; margin-top: 8px;">Sedang Mengupload Video Animasi...
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <div th:replace="assets/js :: js"></div>
+    <script th:inline="javascript">
+        $('#headerVideoLink').magnificPopup({
+            type: 'inline',
+            midClick: true, // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+            callbacks: {
+                open: function () {
+                    $.magnificPopup.instance.close = function () {
+                        // Do whatever else you need to do here
+                        $("#videoPopUp").get(0).pause();
+                        // Call the original close method to close the popup
+                        $.magnificPopup.proto.close.call(this);
+                    };
+                }
+            }
+        });
+        function changeVideo(id) {
+            $("#modalLoading").toggle('modal');
+            var formData = new FormData();
+            formData.append("video", $(`#video`).prop('files')[0]);
+            $.ajax({
+                method: "POST",
+                url: `/admin/video_animasi/${id}`,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data, textStatus, jqXHR) {
+                    $("#modalLoading").toggle('modal');
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: `${data}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#modalLoading").toggle('modal');
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Gagal mengubah video animasi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

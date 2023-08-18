@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title th:text="${website.websiteName + ' | CMS'} "></title>
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed&family=Gilda+Display&display=swap">
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/plugins.css}" />
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/style6.css}" />
+    <style>
+        .dataTables_wrapper label select {
+            width: 160px;
+            max-width: 100%;
+            height: 35px;
+        }
+
+        .my-swal {
+            background: rgba(255, 255, 255, .8);
+            backdrop-filter: blur(2px);
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <!-- Preloader -->
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader"> <span></span> </div>
+        </div>
+    </div>
+    <!-- Progress scroll totop -->
+    <div class="progress-wrap cursor-pointer">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+    </div>
+    <!-- Sidebar Section -->
+    <a href="#" class="js-cappa-nav-toggle cappa-nav-toggle"><i></i></a>
+    <div th:replace="admin/fragments/aside :: sidebar"></div>
+    <!-- Main -->
+    <div id="cappa-main">
+        <section class="rooms1 section-padding bg-black">
+            <div class="container">
+                <h1 th:text="${propertyName}"></h1>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="detailsPropertyForm" action="#">
+                            <div class="row">
+                                <div class="col md-12">
+                                    <div style="margin-bottom: 12px;" class="row">
+                                        <div class="col-md-2">
+                                            <label for="tipeProperty">Tipe Property</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input placeholder="masukan tipe property" type="text" id="tipeProperty"
+                                                name="tipeProperty" class="form-control-sm" disabled="true" />
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="hargaProperty">Harga Property</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <input th:if="${session.role == 'Super User'}"
+                                                    placeholder="masukan harga property" type="text" id="hargaProperty"
+                                                    name="hargaProperty" class="form-control-sm" />
+                                                <input th:unless="${session.role == 'Super User'}"
+                                                    placeholder="masukan harga property" type="text" id="hargaProperty"
+                                                    name="hargaProperty" class="form-control-sm" readonly="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 12px;" class="row">
+                                        <div class="col-md-2">
+                                            <label for="tipeProperty">Status Property</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <select name="statusProperty" id="statusProperty" class="custom-select"
+                                                th:attr="disabled=${session.role == 'Admin' || session.role == 'Marketing'}">
+                                                <option value="" selected disabled>-- Pilih Status Property --</option>
+                                                <option th:each="statusProperty : ${propertyStatus}"
+                                                    th:value="${statusProperty.idPropertyStatus}"
+                                                    th:text="${statusProperty.statusName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="luasTanah">Luas Tanah (m²)</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input th:if="${session.role == 'Super User'}" onkeypress="validate(event)"
+                                                placeholder="masukan luas tanah" type="text" id="luasTanah"
+                                                name="luasTanah" class="form-control-sm" />
+                                            <input th:unless="${session.role == 'Super User'}"
+                                                onkeypress="validate(event)" placeholder="masukan luas tanah"
+                                                type="text" id="luasTanah" name="luasTanah" class="form-control-sm"
+                                                readonly="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="luasBangunan">Luas Bangunan (m²)</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input th:if="${session.role == 'Super User'}"
+                                                placeholder="masukan luas bangunan" type="text" id="luasBangunan"
+                                                name="luasBangunan" class="form-control-sm" />
+                                            <input th:unless="${session.role == 'Super User'}"
+                                                placeholder="masukan luas bangunan" type="text" id="luasBangunan"
+                                                name="luasBangunan" class="form-control-sm" readonly="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="kamarTidur">Jumlah Kamar Tidur</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input th:if="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah kamar Tidur" type="text" id="kamarTidur"
+                                                name="kamarTidur" class="form-control-sm" />
+                                            <input th:unless="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah kamar Tidur" type="text" id="kamarTidur"
+                                                name="kamarTidur" class="form-control-sm" readonly="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="kamarMandi">Jumlah Kamar Mandi</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input th:if="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah kamar Mandi" type="text" id="kamarMandi"
+                                                name="kamarMandi" class="form-control-sm" />
+                                            <input th:unless="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah kamar Mandi" type="text" id="kamarMandi"
+                                                name="kamarMandi" class="form-control-sm" readonly="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="carPort">Car Port</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input th:if="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah car port" type="text" id="carPort"
+                                                name="carPort" class="form-control-sm" />
+                                            <input th:unless="${session.role == 'Super User'}"
+                                                placeholder="masukan jumlah car port" type="text" id="carPort"
+                                                name="carPort" class="form-control-sm" readonly="" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="lokasi">Lokasi</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <textarea th:if="${session.role == 'Super User'}"
+                                                placeholder="masukan lokasi property" style="color: black;"
+                                                class="form-control-sm" name="lokasi" id="lokasi"></textarea>
+                                            <textarea th:unless="${session.role == 'Super User'}"
+                                                placeholder="masukan lokasi property" style="color: black;"
+                                                class="form-control-sm" name="lokasi" id="lokasi"
+                                                readonly=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label for="deskripsi">Deskripsi</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <textarea th:if="${session.role == 'Super User'}" placeholder="masukan deskripsi property" style="color: black;"
+                                                class="form-control-sm" name="deskripsi" id="deskripsi" ></textarea>
+                                            <textarea th:unless="${session.role == 'Super User'}" placeholder="masukan deskripsi property" style="color: black;"
+                                                class="form-control-sm" name="deskripsi" id="deskripsi" readonly=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row" th:if="${session.role == 'Super User' || session.role == 'Admin'}">
+                                        <div class="col-md-6">
+                                            <h3 style="color: #aa8453;">Tambahkan Foto</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${session.role == 'Super User' || session.role == 'Admin'}">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label
+                                                    style="cursor: pointer; color: white; background-color: #aa8453; padding: 8px; border-radius: 8px;"
+                                                    for="foto">choose file</label>
+                                                <input style="display: none;" type="file" name="foto" id="foto"
+                                                    class="custom-file-input" accept="image/jpeg, image/png">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="fotoSection">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row" th:if="${session.role == 'Super User' || session.role == 'Admin'}">
+                                        <div class="col-md-6">
+                                            <h3 style="color: #aa8453;">Tambahkan Video</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${session.role == 'Super User' || session.role == 'Admin'}">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label
+                                                    style="cursor: pointer; color: white; background-color: #aa8453; padding: 8px; border-radius: 8px;"
+                                                    for="video">choose file</label>
+                                                <input style="display: none;" type="file" name="video" id="video"
+                                                    class="custom-file-input" accept="video/mp4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="videoSection">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="d-flex justify-content-center"
+                            th:if="${session.role == 'Super User' || session.role == 'Admin'}">
+                            <button style="background-color: #aa8453; color: white;" type="button" onclick="submit()"
+                                class="btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div id="modalOptions" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" onclick="dismiss('modalOptions')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <input id="detailPropertyId" type="text" style="display: none;">
+                                <div id="btnEditOption" class="col mr-2"
+                                    style="cursor: pointer; background-color: #0069d9;border-radius: 20%;">
+                                    <div class="d-flex justify-content-center mt-3 p-2">
+                                        <i style="color: white;" class="fa-solid fa-pencil"></i>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h6 style="color: white;">Edit</h6>
+                                    </div>
+                                </div>
+                                <div id="btnHapusOption" class="col"
+                                    style="cursor: pointer; background-color: #c82333; border-radius: 20%;">
+                                    <div class="d-flex justify-content-center mt-3 p-2">
+                                        <i style="color: white;" class="fa-solid fa-trash"></i>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h6 style="color: white;">Hapus</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/jquery-migrate-3.0.0.min.js}"></script>
+    <script th:src="@{/js/modernizr-2.6.2.min.js}"></script>
+    <script th:src="@{/js/imagesloaded.pkgd.min.js}"></script>
+    <script th:src="@{/js/jquery.isotope.v3.0.2.js}"></script>
+    <script th:src="@{/js/pace.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/scrollIt.min.js}"></script>
+    <script th:src="@{/js/jquery.waypoints.min.js}"></script>
+    <script th:src="@{/js/owl.carousel.min.js}"></script>
+    <script th:src="@{/js/jquery.stellar.min.js}"></script>
+    <script th:src="@{/js/jquery.magnific-popup.js}"></script>
+    <script th:src="@{/js/YouTubePopUp.js}"></script>
+    <script th:src="@{/js/select2.js}"></script>
+    <script th:src="@{/js/datepicker.js}"></script>
+    <script th:src="@{/js/smooth-scroll.min.js}"></script>
+    <script th:src="@{/js/custom6.js}"></script>
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:inline="javascript">
+        var propertyDetails = /*[[${propertyDetails}]]*/null;
+        var property = /*[[${property}]]*/null;
+        /* Dengan Rupiah */
+        $('#hargaProperty').on('keyup', function (e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+        });
+
+        /* Fungsi */
+        function formatRupiah(angka, prefix) {
+            if (angka.startsWith('0')) {
+                return "";
+            }
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
+
+        $(document).ready(function () {
+            initData();
+        });
+
+        var extFile = ['jpg', 'jpeg', 'png'];
+
+        async function getFileFromURL(filename) {
+            let extension = filename.split('.').pop();
+            let response = await fetch(`/loadfile/${filename}`);
+            let data = await response.blob();
+            let metadata = {
+                type: extFile.includes(extension) ? `image/${extension}` : 'video/mp4'
+            };
+            return new File([data], filename, metadata);
+        }
+
+        function initData() {
+            $("#tipeProperty").val(propertyDetails.tipeProperty);
+            $("#statusProperty").val(propertyDetails.propertyStatus.idPropertyStatus);
+            $("#hargaProperty").val(propertyDetails.harga);
+            $("#hargaProperty").trigger('keyup');
+            $("#luasTanah").val(propertyDetails.luasTanah);
+            $("#luasBangunan").val(propertyDetails.luasBangunan);
+            $("#kamarTidur").val(propertyDetails.kamarTidur);
+            $("#kamarMandi").val(propertyDetails.kamarMandi);
+            $("#carPort").val(propertyDetails.carPort);
+            $("#lokasi").val(propertyDetails.lokasi);
+            $("#deskripsi").val(propertyDetails.deskripsi);
+            propertyDetails.listPhoto.forEach(function (value, i) {
+                getFileFromURL(value.namaPhoto).then(function (res) {
+                    listFoto.push(res);
+                    readFileFromURL(res, function (e) {
+                        listFotoPriview.push(e.target.result);
+                        fotoSection();
+                    });
+                });
+            })
+
+            propertyDetails.listVideo.forEach(function (value, i) {
+                getFileFromURL(value.namaVideo).then(function (res) {
+                    listVideo.push(res);
+                    videoSection();
+                });
+            })
+        }
+
+        var listFotoPriview = [];
+        var listFoto = [];
+
+        var listVideo = [];
+
+        function readURL(input, onCallback) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = onCallback;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function readFileFromURL(input, onCallback) {
+            var reader = new FileReader();
+            reader.onload = onCallback;
+            reader.readAsDataURL(input);
+        }
+
+        function fotoSection() {
+            $("#fotoSection").empty();
+            if (listFotoPriview.length > 0) {
+                listFotoPriview.forEach(function (value, i) {
+                    $("#fotoSection").append(`<div class="col-md-4 gallery-item">
+                    <i onclick="deletePhoto(${i})" style="border-radius:4px; background-color: black; cursor:pointer; z-index:20; color: white; position: absolute; top:0; right:0;" class="fa fa-times p-1 mr-4 mt-4"></i> 
+                                            <a onclick="zoomImage('${value}')" title="" id="image-zoom" class="img-zoom">
+                                                
+                                                <div class="gallery-box">
+                                                    <div class="gallery-img"> <img src="${value}"
+                                                            class="img-fluid mx-auto d-block" alt="work-img"> </div>
+                                                </div>
+                                            </a>
+                                        </div>`);
+                });
+            }
+        }
+
+        function videoSection() {
+            $("#videoSection").empty();
+            if (listVideo.length > 0) {
+                listVideo.forEach(function (value, i) {
+                    $("#videoSection").append(`<div class="col-md-4 gallery-item ml-2">
+                    <i title="hapus" onclick="deleteVideo(${i})" style="border-radius:4px; background-color: black; cursor:pointer; z-index:20; color: white; position: absolute; top:1; left:1;" class="fa fa-times p-1"></i> 
+                                        <video width="300" controls>
+                                            <source src="${URL.createObjectURL(value)}" id="video_here">
+                                                Your browser does not support HTML5 video.
+                                        </video>
+                                        </div>`);
+                });
+            }
+        }
+
+        function deleteVideo(i) {
+            listVideo.splice(i, 1);
+            setTimeout(function () {
+                videoSection();
+            }, 200);
+        }
+
+        function deletePhoto(i) {
+            listFotoPriview.splice(i, 1);
+            listFoto.splice(i, 1);
+            setTimeout(function () {
+                fotoSection();
+            }, 200);
+        }
+
+        $("#foto").on('change', function () {
+            listFoto.push(this.files[0]);
+            readURL(this, function (e) {
+                listFotoPriview.push(e.target.result);
+            });
+            setTimeout(function () {
+                fotoSection();
+            }, 2000);
+        });
+
+        $("#video").on('change', function () {
+            listVideo.push(this.files[0]);
+            setTimeout(function () {
+                videoSection();
+            }, 2000);
+        });
+
+        function dismiss(id) {
+            $(`#${id}`).toggle('modal');
+        }
+
+        function submit() {
+            propertyDetails.idProperty = /*[[${property.idProperty}]]*/null;
+            propertyDetails.tipeProperty = $("#tipeProperty").val();
+            propertyDetails.propertyStatus = {
+                "idPropertyStatus": $("#statusProperty option:selected").val(),
+                "statusName": $("#statusProperty option:selected").text(),
+            };
+            propertyDetails.harga = $("#hargaProperty").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            propertyDetails.luasTanah = $("#luasTanah").val();
+            propertyDetails.luasBangunan = $("#luasBangunan").val();
+            propertyDetails.kamarTidur = $("#kamarTidur").val();
+            propertyDetails.kamarMandi = $("#kamarMandi").val();
+            propertyDetails.carPort = $("#carPort").val();
+            propertyDetails.lokasi = $("#lokasi").val();
+            propertyDetails.deskripsi = $("#deskripsi").val();
+            var formData = new FormData();
+            if (listFoto.length > 0) {
+                listFoto.forEach(foto => {
+                    formData.append("images", foto);
+                });
+            }
+            if (listVideo.length > 0) {
+                listVideo.forEach(video => {
+                    formData.append("videos", video);
+                });
+            }
+            var jsonData = JSON.stringify(propertyDetails);
+            var blobData = new Blob([jsonData], {
+                type: 'application/json'
+            });
+            formData.append("propertyDetails", blobData);
+            $.ajax({
+                method: "POST",
+                url: `/property/post/${propertyDetails.idProperty}`,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data, textStatus, jqXHR) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Berhasil menambahkan detail property',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function () {
+                        window.location.href = `/admin/p/${property.propertyName}`;
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Gagal menambahkan detail property',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            });
+        }
+
+        function validate(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /^\d+$/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault)
+                    theEvent.preventDefault();
+            }
+        }
+
+        function validateWithComa(evt) {
+            var theEvent = evt || window.event;
+
+            // Handle paste
+            if (theEvent.type === 'paste') {
+                key = event.clipboardData.getData('text/plain');
+            } else {
+                // Handle key press
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+            }
+            var regex = /[0-9]|\./;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault)
+                    theEvent.preventDefault();
+            }
+        }
+
+        function zoomImage(url) {
+            $.magnificPopup.open({
+                items: {
+                    src: `${url}`
+                },
+                type: "image",
+                closeOnContentClick: !0,
+                mainClass: "mfp-fade",
+                gallery: {
+                    enabled: !0,
+                    navigateByImgClick: !0,
+                    preload: [0, 1]
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

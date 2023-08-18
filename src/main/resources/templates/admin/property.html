@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title th:text="${website.websiteName + ' | CMS'} "></title>
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed&family=Gilda+Display&display=swap">
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/plugins.css}" />
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/style6.css}" />
+    <style>
+        .dataTables_wrapper label select {
+            width: 160px;
+            max-width: 100%;
+            height: 35px;
+        }
+
+        .my-swal {
+            background: rgba(255, 255, 255, .8);
+            backdrop-filter: blur(2px);
+        }
+
+        .rooms1 .item:hover .con {
+            /* bottom: 0; */
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <!-- Preloader -->
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader"> <span></span> </div>
+        </div>
+    </div>
+    <!-- Progress scroll totop -->
+    <div class="progress-wrap cursor-pointer">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+    </div>
+    <!-- Sidebar Section -->
+    <a href="#" class="js-cappa-nav-toggle cappa-nav-toggle"><i></i></a>
+    <div th:replace="admin/fragments/aside :: sidebar"></div>
+    <!-- Main -->
+    <div id="cappa-main">
+        <div th:replace="admin/fragments/header :: header"></div>
+        <section class="rooms1 section-padding bg-black">
+            <div class="container">
+                <div class="row">
+                    <div class="d-flex justify-content-between">
+                        <div class="section-title"
+                            th:utext="${#strings.containsIgnoreCase(property.propertyName, 'property') ? property.propertyName : property.propertyName + ' Property'}">
+                        </div>
+                        <div th:if="${session.role == 'Super User' || session.role == 'Admin'}"><i
+                                onclick="hapusProperty()" title="hapus" style="cursor: pointer;"
+                                class="p-2 ml-2 fa-solid fa-trash"></i>
+                            <a th:href="@{${property.propertyName} + '/edit'}"><i title="edit" style="cursor: pointer;"
+                                    class="p-2 ml-2 fa-solid fa-pencil"></i></a>
+                        </div>
+                    </div>
+                    <div th:if="${session.role == 'Super User' || session.role == 'Admin'}" class="col-md-12">
+                        <div class="item">
+                            <div style="cursor: pointer;"><a th:href="@{${property.propertyName} + '/add'}"><i
+                                        class="ti-plus"></i> Tambahkan Tipe property</a> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="listDetailProperty">
+                </div>
+            </div>
+        </section>
+        <div id="modalOptions" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" onclick="dismiss('modalOptions')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <input id="detailPropertyId" type="text" style="display: none;">
+                                <div id="btnEditOption" class="col mr-2"
+                                    style="cursor: pointer; background-color: #0069d9;border-radius: 20%;">
+                                    <div class="d-flex justify-content-center mt-3 p-2">
+                                        <i style="color: white;" class="fa-solid fa-pencil"></i>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h6 style="color: white;">Edit</h6>
+                                    </div>
+                                </div>
+                                <div id="btnHapusOption" class="col"
+                                    style="cursor: pointer; background-color: #c82333; border-radius: 20%;">
+                                    <div class="d-flex justify-content-center mt-3 p-2">
+                                        <i style="color: white;" class="fa-solid fa-trash"></i>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h6 style="color: white;">Hapus</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <div th:replace="assets/js :: js"></div>
+    <script th:src="@{/js/torupiah.js}"></script>
+    <script th:inline="javascript">
+        var property = /*[[${property}]]*/null;
+
+        $(document).ready(function () {
+            printListPropertyDetails();
+        });
+
+        function dismiss(id) {
+            $(`#${id}`).toggle('modal');
+        }
+        function onOptionPropertyClicked(idDetailsProperty) {
+            $("#detailPropertyId").val(idDetailsProperty);
+            $("#modalOptions").toggle('modal');
+        }
+        $("#btnEditOption").on('click', function () {
+            window.location.href = `${window.location.pathname}/${$("#detailPropertyId").val()}`;
+        });
+        $("#btnHapusOption").on('click', function () {
+            console.log($("#detailPropertyId").val());
+            $.ajax({
+                url: `/admin/deleteDetailsPropertyById/${$("#detailPropertyId").val()}`,
+                method: 'DELETE',
+                success: function (data, textStatus, jqXHR) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: `${data.message}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function () {
+                        $("#modalOptions").toggle('modal');
+                        window.location.href = `/admin`;
+                    });
+                },
+                error: function (jqXHR, textStatus, err) {
+
+                }
+            })
+        });
+
+        function hapusProperty() {
+            Swal.fire({
+                title: 'Yakin ingin menghapus Property?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                confirmButtonColor: '#c82333',
+                cancelButtonText: `Tidak`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/admin/property?namaProperty=${property.propertyName}`,
+                        method: 'DELETE',
+                        success: function (data, textStatus, jqXHR) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: `${data.message}`,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function () {
+                                window.location.href = `/admin`;
+                            });
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                        }
+                    });
+
+                }
+            })
+        }
+
+        var role = /*[[${session.role}]]*/null;
+
+        function printListPropertyDetails() {
+            console.log(property.listPropertyDetails);
+            $("#listDetailProperty").empty();
+            property.listPropertyDetails.forEach(function (propertyDetails, index) {
+                var badge;
+                if (propertyDetails.propertyStatus.idPropertyStatus == 3) {
+                    badge = `<span style="position: absolute; z-index: 20; background-color:#aa8453; color:white; border-radius:100px;margin-top: 4px; margin-left: 4px;" class="text-center p-2">SOLD</span>`;
+                } else if (propertyDetails.propertyStatus.idPropertyStatus == 2) {
+                    badge = `<span style="position: absolute; z-index: 20; background-color:#FFEA20; color:white; border-radius:100px;margin-top: 4px; margin-left: 4px;" class="text-center p-2">HOLD</span>`;
+                } else if (propertyDetails.propertyStatus.idPropertyStatus == 1 && role != null) {
+                    badge = `<span style="position: absolute; z-index: 20; background-color:#03C988; color:white; border-radius:100px;margin-top: 4px; margin-left: 4px;" class="text-center p-2">AVAILABLE</span>`;
+                }
+                $("#listDetailProperty").append(
+                    `<div class="col-md-4">
+                        <div class="item">
+                            ${badge ?? ''}
+                            <div class="position-re o-hidden"> <img style="height: 390px;"
+                                    src="${property.propertyBanner == '' ? '/img/rooms/1.jpg' : '/loadfile/' + propertyDetails.listPhoto[0].namaPhoto}"
+                                    alt="Gada Foto"> </div>
+                                    ${role != 'Marketing' ? `<span onclick="onOptionPropertyClicked(${propertyDetails.idDetailsProperty})"
+                        style="cursor: pointer;" class="category"><i
+                            class="fa-solid fa-ellipsis-vertical"></i></span>` : null}
+                            
+                            <div class="con">
+                                <h5><a href="${property.propertyName}/${propertyDetails.idDetailsProperty}">Tipe ${propertyDetails.tipeProperty}</a> </h5>
+                                <h5><a href="${property.propertyName}/${propertyDetails.idDetailsProperty}">${formatRupiah(propertyDetails.harga == null ? '0' : propertyDetails.harga.toString() , 'IDR ')}</a> </h5>
+                                <div class="line"></div>
+                                <div class="row facilities">
+                                    <div class="col col-md-7">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i></li>
+                                            <li><i class="flaticon-bath"></i></li>
+                                            <li><i class="flaticon-breakfast"></i></li>
+                                            <li><i class="flaticon-towel"></i></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col col-md-5 text-right">
+                                        <div class="permalink"><a
+                                                href="${property.propertyName}/${propertyDetails.idDetailsProperty}">Details
+                                                <i class="ti-arrow-right"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>`
+                );
+            });
+        }
+
+        function formatRupiah(angka) {
+            return toRupiah(angka, { symbol: 'IDR', useUnit: true, longUnit: true, spaceBeforeUnit: true, formal: false, decimal: '.', floatingPoint: 1 }).replace('.0', '');
+        }
+    </script>
+</body>
+
+</html>

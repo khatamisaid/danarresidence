@@ -1,0 +1,60 @@
+<div th:fragment="footerTop"  class="site-footer__top" id="footerTop">
+    <div class="row">
+        <div class="col-xl-5 col-lg-5 col-md-8 wow fadeInUp" data-wow-delay="400ms">
+            <div class="footer-widget__column footer-widget__newsletter">
+                <div class="footer-widget__title-box">
+                    <h3 class="footer-widget__title" th:text="${website.websiteName}"></h3>
+                </div>
+                <p class="footer-widget__contact-text" style="text-align: justify;">
+                    Melia Town House selalu siap membantu dengan senang hati atas pertanyaan Anda.
+                    Silahkan tanyakan apapun kepada kami untuk masalah rumah idaman yang Anda
+                    inginkan. Anda dapat
+                    menghubungi kami melalui telepon atau email terlampir. Sekiranya terdapat
+                    masukan, Kami siap
+                    menerima.
+                </p>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-8 wow fadeInUp" data-wow-delay="300ms">
+            <div class="footer-widget__column footer-widget__contact">
+                <div class="footer-widget__title-box">
+                    <h3 class="footer-widget__title">Kontak</h3>
+                </div>
+                <p class="footer-widget__contact-text">Jalan Mardani Raya No.14, RT 01 RW 10,
+                    Cempaka Putih Barat, Cempaka Putih, Jakarta Pusat, DKI Jakarta, 10510
+                </p>
+                <ul class="footer-widget__contact-list list-unstyled">
+                    <li>
+                        <div class="icon">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                        <div class="text">
+                            <p><a href="mailto:needhelp@company.com">needhelp@company.com</a></p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon">
+                            <span class="icon-telephone"></span>
+                        </div>
+                        <div class="text">
+                            <p><a href="tel:+6221243684">(021)21243684</a></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="200ms">
+            <div class="footer-widget__column footer-widget__explore">
+                <div class="footer-widget__title-box">
+                    <h3 class="footer-widget__title">explore</h3>
+                </div>
+                <div class="footer-widget__explore-list-box">
+                    <ul class="footer-widget__explore-list list-unstyled">
+                        <li><a th:href="@{/}">Beranda</a></li>
+                        <li><a th:href="@{/property}">Property</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

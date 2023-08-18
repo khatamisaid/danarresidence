@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title th:text="${website.websiteName + ' | CMS'} "></title>
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed&family=Gilda+Display&display=swap">
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/plugins.css}" />
+    <link rel="stylesheet" th:href="@{/assets/onasis/css/style6.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+    <style>
+        .dataTables_wrapper label select {
+            width: 160px;
+            max-width: 100%;
+            height: 35px;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+    <!-- Preloader -->
+    <div class="preloader-bg"></div>
+    <div id="preloader">
+        <div id="preloader-status">
+            <div class="preloader-position loader"> <span></span> </div>
+        </div>
+    </div>
+    <!-- Progress scroll totop -->
+    <div class="progress-wrap cursor-pointer">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+    </div>
+    <!-- Sidebar Section -->
+    <a href="#" class="js-cappa-nav-toggle cappa-nav-toggle"><i></i></a>
+    <div th:replace="admin/fragments/aside :: sidebar"></div>
+    <!-- Main -->
+    <div id="cappa-main">
+        <section class="section-padding">
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="form-check mr-5">
+                        <label class="form-check-label">
+                            <input onclick="radio1Clicked()" id="radio1" checked="checked" type="radio"
+                                class="form-check-input" name="optradio">Otomatis
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="radio2Clicked()" id="radio2" type="radio" class="form-check-input"
+                                name="optradio">Manual
+                        </label>
+                    </div>
+                </div>
+                <div id="printData" style="background-color: white; border-color: #aa8453;" class="card">
+                    <div class="card-header">
+                        <h3 id="headerFormulir" style="color: #aa8453;">Simulasi Sistem Pembayaran</h3>
+                    </div>
+                    <div style="display:block;" class="card-body" id="bodyRadio1">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="tanggal">Tanggal: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input th:value="${tanggal}" type="text" class="form-control-sm" name="tanggal"
+                                    id="tanggal" readonly="" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <label for="property">Property: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <select onchange="this.setAttribute('value', this.value)" name="property" id="property"
+                                    class="custom-select">
+                                    <option value="" selected disabled>-- Pilih Property --</option>
+                                    <option th:each="property: ${listProperty}" th:value="${property.idProperty}"
+                                        th:text="${property.propertyName}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <label for="tipeProperty">Tipe Property: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <select onchange="this.setAttribute('value', this.value)" name="tipeProperty"
+                                    id="tipeProperty" class="custom-select">
+                                    <option value="" selected disabled>-- Pilih Tipe --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="sectionLbLt" class="row" style="display: none;">
+                            <div class="col-md-2">
+                                <label for="luasBangunan">Luas Bangunan: </label>
+                            </div>
+                            <div class="col-md-3">
+                                <p style="color: black;" id="luasBangunan"></p>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="luasTanah">Luas Tanah: </label>
+                            </div>
+                            <div class="col-md-3">
+                                <p style="color: black;" id="luasTanah"></p>
+                            </div>
+                        </div>
+                        <div id="sectionPembayaran" style="display: none;">
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="caraBayar">Cara Bayar: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select onchange="this.setAttribute('value', this.value)" name="caraBayar"
+                                        id="caraBayar" class="custom-select">
+                                        <option value="" selected disabled>-- Pilih cara bayar --</option>
+                                        <option value="1">Tunai</option>
+                                        <option value="2">Tunai Bertahap</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="hargaJual">Harga: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p style="color:black" id="hargaJual">Rp. 0</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="discount">Discount: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input onchange="this.setAttribute('value', this.value)" type="text" name="discount"
+                                        id="discount" placeholder="masukan discount harga" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalHarga">Harga Discount:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalHarga">Rp. 0</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="catatan">Catatan:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea onchange="this.setAttribute('value', this.value)" style="color: black;"
+                                        name="catatan" id="catatan" cols="30" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="dpBayar">DP: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select onchange="this.setAttribute('value', this.value)" class="custom-select"
+                                        name="dpBayar" id="dpBayar">
+                                        <option value="">-- Uang Muka / DP --</option>
+                                        <option value="1">10%</option>
+                                        <option value="2">20%</option>
+                                        <option value="3">30%</option>
+                                        <option value="4">40%</option>
+                                        <option value="5">50%</option>
+                                        <option value="6">60%</option>
+                                        <option value="7">70%</option>
+                                        <option value="8">80%</option>
+                                        <option value="9">90%</option>
+                                        <option value="10">100%</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="tanggalDp">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input onchange="this.setAttribute('value', this.value)" class="form-control"
+                                        type="date" name="tanggalDp" id="tanggalDp" placeholder="masukan tanggal dp" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalDp">Total DP</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalDp">Rp. 0</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="bookingFee">Booking Fee: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input onchange="this.setAttribute('value', this.value)" class="form-control-sm"
+                                        type="text" name="bookingFee" id="bookingFee"
+                                        placeholder="masukan booking fee" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="tanggalBooking">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input onchange="this.setAttribute('value', this.value)" class="form-control"
+                                        type="date" name="tanggalBooking" id="tanggalBooking"
+                                        placeholder="masukan booking fee" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalkeseluruhanHarga">Total Angsuran</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalkeseluruhanHarga">Rp. 0</p>
+                                </div>
+                                <div class="col-md-2" id="lblTglAngsuran" style="display: none;">
+                                    <label for="tanggalAngsuran">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4" id="inputTglAngsuran" style="display: none;">
+                                    <input onchange="this.setAttribute('value', this.value)" class="form-control"
+                                        type="date" name="tanggalAngsuran" id="tanggalAngsuran"
+                                        placeholder="masukan tanggal angsuran" />
+                                </div>
+                            </div>
+                            <div style="display: none;" id="sectionTunaiBertahap">
+                                <div class="row mb-2">
+                                    <div class="col-md-2">
+                                        <label for="periodeCicilan">
+                                            Periode Cicilan:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select onchange="this.setAttribute('value', this.value)" class="custom-select"
+                                            name="periodeCicilan" id="periodeCicilan">
+                                            <option value="">-- Pilih Periode Cicilan --</option>
+                                            <option value="1">1 bulan</option>
+                                            <option value="2">2 bulan</option>
+                                            <option value="3">3 bulan</option>
+                                            <option value="4">4 bulan</option>
+                                            <option value="5">5 bulan</option>
+                                            <option value="6">6 bulan</option>
+                                            <option value="7">7 bulan</option>
+                                            <option value="8">8 bulan</option>
+                                            <option value="9">9 bulan</option>
+                                            <option value="10">10 bulan</option>
+                                            <option value="11">11 bulan</option>
+                                            <option value="12">12 bulan</option>
+                                            <option value="13">13 bulan</option>
+                                            <option value="14">14 bulan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" id="sectionBiayaAdmin" style="display: none;">
+                                    <div class="col-md-2">
+                                        <label for="biayaAdmin">Biaya Admin: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color:black" id="biayaAdmin">Rp. 6.000.000</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="hargaCicilan">Cicilan: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color:black" id="hargaCicilan">Rp. 0 / Bulan</p>
+                                    </div>
+                                </div>
+                                <div class="row p-2 m-2" id="sectionCicilan">
+                                    <table id="tableCicilan" class="table table-striped table-bordered"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="color:#aa8453">Cicilan</th>
+                                                <th style="color:#aa8453">Nominal</th>
+                                                <th style="color:#aa8453">Tanggal Cicilan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sectionRadioDataPembeli">
+                            <div class="row mb-3">
+                                <div class="col-md-2">
+                                    <label for="radio3">Data Pembeli: </label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <label class="form-check-label">
+                                        <input onclick="radio3Clicked()" id="radio3" type="radio"
+                                            class="form-check-input" name="optradio1">Ya
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input onclick="radio4Clicked()" checked="checked" id="radio4" type="radio"
+                                            class="form-check-input" name="optradio1">Tidak
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sectionPembeli" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="namaPembeli">Nama Pembeli: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nama pembeli" type="text" name="namaPembeli"
+                                        id="namaPembeli" class="form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="nomorKtp">No KTP: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nomor KTP" type="text" name="nomorKtp" id="nomorKtp"
+                                        class="form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="alamatLengkap">Alamat Lengkap: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea onchange="this.setAttribute('value', this.value)" style="color: black;"
+                                        name="alamatLengkap" id="alamatLengkap" cols="30" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="nomerTelpon">Nomor Telepon</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"
+                                                style="border:0;background-color: white; font-weight: 600;">+62</span>
+                                        </div>
+                                        <input onchange="this.setAttribute('value', this.value)" type="text"
+                                            class="form-control p-2" placeholder="masukan nomor telepon"
+                                            id="nomerTelpon" name="nomerTelpon">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="namaMarketing">Nama Marketing: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nama marketing" type="text" name="namaMarketing"
+                                        id="namaMarketing" class="form-control-sm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:none;" class="card-body" id="bodyRadio2">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="tanggal">Tanggal: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input th:value="${tanggal}" type="text" class="form-control-sm" name="tanggal"
+                                    id="tanggal" readonly="" style="font-weight: 600;" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <label for="property1">Property: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input onchange="this.setAttribute('value', this.value)"
+                                    placeholder="masukan nama property" type="text" name="property1" id="property1"
+                                    class="form-control-sm" style="font-weight: 600;" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-2">
+                                <label for="tipeProperty1">Tipe Property: </label>
+                            </div>
+                            <div class="col-md-6">
+                                <input onchange="this.setAttribute('value', this.value)"
+                                    placeholder="masukan tipe property" type="text" name="tipeProperty1"
+                                    id="tipeProperty1" class="form-control-sm" style="font-weight: 600;" />
+                            </div>
+                        </div>
+                        <div id="sectionLbLt" class="row">
+                            <div class="col-md-2">
+                                <label for="luasBangunan1">Luas Bangunan: </label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group mb-3">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        type="text" class="form-control" name="luasBangunan" id="luasBangunan1">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"
+                                            style="border:0;background-color: white; font-weight: 600;">m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="luasTanah1">Luas Tanah: </label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group mb-3">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        type="text" class="form-control" name="luasTanah" id="luasTanah1">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"
+                                            style="border:0;background-color: white; font-weight: 600;">m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sectionPembayaran" style="display: block;">
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="caraBayar">Cara Bayar: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <select onchange="this.setAttribute('value', this.value)" name="caraBayar1"
+                                        id="caraBayar1" class="custom-select">
+                                        <option value="" selected disabled>-- Pilih cara bayar --</option>
+                                        <option value="1">Tunai</option>
+                                        <option value="2">Tunai Bertahap</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="hargaJual1">Harga: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan harga property" type="text" id="hargaJual1"
+                                        name="hargaJual1" class="form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="discount1">Discount: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        type="text" name="discount1" id="discount1"
+                                        placeholder="masukan discount harga" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalHarga1">Harga Discount:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalHarga1">Rp. 0</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="catatan1">Catatan:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea onchange="this.setAttribute('value', this.value)"
+                                        style="font-weight: 600;color: black;" name="catatan1" id="catatan1" cols="30"
+                                        rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="dpBayar1">DP: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select onchange="this.setAttribute('value', this.value)" class="custom-select"
+                                        name="dpBayar1" id="dpBayar1">
+                                        <option value="">-- Uang Muka / DP --</option>
+                                        <option value="1">10%</option>
+                                        <option value="2">20%</option>
+                                        <option value="3">30%</option>
+                                        <option value="4">40%</option>
+                                        <option value="5">50%</option>
+                                        <option value="6">60%</option>
+                                        <option value="7">70%</option>
+                                        <option value="8">80%</option>
+                                        <option value="9">90%</option>
+                                        <option value="10">100%</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="tanggalDp1">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        class="form-control" type="date" name="tanggalDp1" id="tanggalDp1"
+                                        placeholder="masukan tanggal dp" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalDp1">Total DP</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalDp1">Rp. 0</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="bookingFee1">Booking Fee: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        class="form-control-sm" type="text" name="bookingFee1" id="bookingFee1"
+                                        placeholder="masukan booking fee" />
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="tanggalBooking1">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        class="form-control" type="date" name="tanggalBooking1" id="tanggalBooking1"
+                                        placeholder="masukan booking fee" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="totalkeseluruhanHarga1">Total Angsuran</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <p style="color:black" id="totalkeseluruhanHarga1">Rp. 0</p>
+                                </div>
+                                <div class="col-md-2" id="lblTglAngsuran1" style="display: none;">
+                                    <label for="tanggalAngsuran1">Tanggal: </label>
+                                </div>
+                                <div class="col-md-4" id="inputTglAngsuran1" style="display: none;">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        class="form-control" type="date" name="tanggalAngsuran1" id="tanggalAngsuran1"
+                                        placeholder="masukan tanggal angsuran" />
+                                </div>
+                            </div>
+                            <div style="display: none;" id="sectionTunaiBertahap1">
+                                <div class="row mb-2">
+                                    <div class="col-md-2">
+                                        <label for="periodeCicilan1">
+                                            Periode Cicilan:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select onchange="this.setAttribute('value', this.value)" class="custom-select"
+                                            name="periodeCicilan1" id="periodeCicilan1">
+                                            <option value="">-- Pilih Periode Cicilan --</option>
+                                            <option value="1">1 bulan</option>
+                                            <option value="2">2 bulan</option>
+                                            <option value="3">3 bulan</option>
+                                            <option value="4">4 bulan</option>
+                                            <option value="5">5 bulan</option>
+                                            <option value="6">6 bulan</option>
+                                            <option value="7">7 bulan</option>
+                                            <option value="8">8 bulan</option>
+                                            <option value="9">9 bulan</option>
+                                            <option value="10">10 bulan</option>
+                                            <option value="11">11 bulan</option>
+                                            <option value="12">12 bulan</option>
+                                            <option value="13">13 bulan</option>
+                                            <option value="14">14 bulan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" id="sectionBiayaAdmin1" style="display: none;">
+                                    <div class="col-md-2">
+                                        <label for="biayaAdmin1">Biaya Admin: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color:black" id="biayaAdmin1">Rp. 6.000.000</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="hargaCicilan1">Cicilan: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color:black" id="hargaCicilan1">Rp. 0 / Bulan</p>
+                                    </div>
+                                </div>
+                                <div class="row p-2 m-2" id="sectionCicilan">
+                                    <table id="tableCicilan1" class="table table-striped table-bordered"
+                                        style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="color:#aa8453">Cicilan</th>
+                                                <th style="color:#aa8453">Nominal</th>
+                                                <th style="color:#aa8453">Tanggal Cicilan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sectionRadioDataPembeli">
+                            <div class="row mb-3">
+                                <div class="col-md-2">
+                                    <label for="radio3">Data Pembeli: </label>
+                                </div>
+                                <div class="form-check mr-5">
+                                    <label class="form-check-label">
+                                        <input onclick="radio5Clicked()" id="radio5" type="radio"
+                                            class="form-check-input" name="optradio2">Ya
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input onclick="radio6Clicked()" checked="checked" id="radio" type="radio"
+                                            class="form-check-input" name="optradio2">Tidak
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sectionPembeli1" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="namaPembeli1">Nama Pembeli: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nama pembeli" type="text" name="namaPembeli1"
+                                        id="namaPembeli1" class="form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="nomorKtp1">No KTP: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nomor KTP" type="text" name="nomorKtp1" id="nomorKtp1"
+                                        class="form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="alamatLengkap1">Alamat Lengkap: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <textarea onchange="this.setAttribute('value', this.value)"
+                                        style="font-weight: 600;color: black;" name="alamatLengkap1" id="alamatLengkap1"
+                                        cols="30" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="nomerTelpon1">Nomor Telepon</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"
+                                                style="border:0;background-color: white; font-weight: 600;">+62</span>
+                                        </div>
+                                        <input style="font-weight: 600;"
+                                            onchange="this.setAttribute('value', this.value)" type="text"
+                                            class="form-control p-2" placeholder="masukan nomor telepon"
+                                            id="nomerTelpon1" name="nomerTelpon1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="namaMarketing1">Nama Marketing: </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input style="font-weight: 600;" onchange="this.setAttribute('value', this.value)"
+                                        placeholder="masukan nama marketing" type="text" name="namaMarketing1"
+                                        id="namaMarketing1" class="form-control-sm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" id="footerCard">
+                        <button id="btnPrint" class="btn btn-primary" style="display: none;"><i class="fa fa-print"></i>
+                            PRINT</button>
+                        <button id="btnPrint1" class="btn btn-primary" style="display: block;"><i
+                                class="fa fa-print"></i> PRINT</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- jQuery -->
+    <div th:replace="assets/js :: js"></div>
+    <script th:src="@{/js/moment.min.js}"></script>
+    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script th:inline="javascript">
+        var tableCicilan;
+        $("#property").on('change', function () {
+            $("#tipeProperty").empty();
+            var option = `<option value="" selected disabled>-- Pilih Tipe --</option>`;
+            $("#tipeProperty").append(option);
+            if (this.value == '') {
+                return;
+            }
+            $.get(`/property/getTipeById?id=${this.value}`, function (res) {
+                if (res.listTipeProperty.length > 0) {
+                    res.listTipeProperty.forEach(function (value) {
+                        option = `<option value="${value}"> ${value} </option>`;
+                        $("#tipeProperty").append(option);
+                    });
+                    return;
+                }
+                $("#sectionPembayaran").hide();
+                $("#sectionLbLt").hide();
+                return;
+            });
+        });
+
+        $("#tipeProperty").on('change', function () {
+            if (this.value == '' || $("#property option:selected").val() == '') {
+                return;
+            }
+            $.get(`/property/${$("#property option:selected").val()}?tipeProperty=${this.value}`, function (res) {
+                if (res.propertyDetails != null) {
+                    $("#sectionLbLt").show();
+                    $("#sectionPembayaran").show();
+                    $("#luasBangunan").text(`${res.propertyDetails.luasBangunan} (m²)`);
+                    $("#luasTanah").text(`${res.propertyDetails.luasTanah} (m²)`);
+                    $("#hargaJual").text(`${formatRupiah(res.propertyDetails.harga.toString(), 'Rp. ')}`);
+                    // $("#headerFormulir").text(`Simulasi Sistem Pembayaran ${res.property.propertyName}`);
+                    return;
+                }
+                $("#sectionPembayaran").hide();
+                $("#sectionLbLt").hide();
+                return;
+            })
+        });
+
+        $('#discount1').on('keyup', function (e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+        });
+
+        $('#bookingFee1').on('keyup', function (e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+            var dpBayar = $("#dpBayar1").find("option:selected").text().replace("%", "");
+            var totalHarga = $("#totalHarga1").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var bookingFee = $(this).val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var totalHargaMinBookingFee = (totalHarga - bookingFee);
+            var hargaSetelahBookingFee = totalHargaMinBookingFee * (dpBayar / 100);
+            var totalDp = totalHargaMinBookingFee - hargaSetelahBookingFee;
+            // $("#totalDp1").text(formatRupiah(Math.ceil(hargaSetelahBookingFee).toString(), 'Rp. '));
+            $("#totalkeseluruhanHarga1").text(formatRupiah(Math.ceil(totalDp).toString(), 'Rp. '));
+        });
+
+        $('#discount').on('keyup', function (e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+        });
+
+        $('#bookingFee').on('keyup', function (e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+            var dpBayar = $("#dpBayar").find("option:selected").text().replace("%", "");
+            var totalHarga = $("#totalHarga").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var bookingFee = $(this).val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var totalHargaMinBookingFee = (totalHarga - bookingFee);
+            var hargaSetelahBookingFee = totalHargaMinBookingFee * (dpBayar / 100);
+            var totalDp = totalHargaMinBookingFee - hargaSetelahBookingFee;
+            // $("#totalDp").text(formatRupiah(Math.ceil(hargaSetelahBookingFee).toString(), 'Rp. '));
+            $("#totalkeseluruhanHarga").text(formatRupiah(Math.ceil(totalDp).toString(), 'Rp. '));
+        });
+
+        $("#discount1").on('change', function () {
+            var hargaJual = $("#hargaJual1").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var hargaDiscount = this.value.trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            $("#totalHarga1").text(formatRupiah(Math.ceil((hargaJual - hargaDiscount)).toString(), 'Rp. '));
+        });
+
+        $('#hargaJual1').on('keyup', function (e) {
+            console.log($("#discount1").val() == '' ? "Rp. 0" : $("#discount1").val());
+            this.value = formatRupiah(this.value, 'Rp. ');
+            var hargaJual = $("#hargaJual1").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var hargaDiscount = $("#discount1").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            $("#totalHarga1").text(formatRupiah(Math.ceil((hargaJual - hargaDiscount)).toString(), 'Rp. '));
+        });
+
+        $("#discount").on('change', function () {
+            var hargaJual = $("#hargaJual").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var hargaDiscount = this.value.trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            $("#totalHarga").text(formatRupiah(Math.ceil((hargaJual - hargaDiscount)).toString(), 'Rp. '));
+        });
+
+        $("#dpBayar1").on('change', function () {
+            var dpBayar = $(this).find("option:selected").text().replace("%", "");
+            var totalHarga = $("#totalHarga1").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var bookingFee = $("#bookingFee1").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var totalHargaMinBookingFee = (totalHarga - bookingFee);
+            var hargaSetelahBookingFee = totalHargaMinBookingFee * (dpBayar / 100);
+            var totalDp = totalHargaMinBookingFee - hargaSetelahBookingFee;
+            $("#totalDp1").text(formatRupiah(Math.ceil(hargaSetelahBookingFee).toString(), 'Rp. '));
+            $("#totalkeseluruhanHarga1").text(formatRupiah(Math.ceil(totalDp).toString(), 'Rp. '));
+        });
+
+        $("#dpBayar").on('change', function () {
+            var dpBayar = $(this).find("option:selected").text().replace("%", "");
+            var totalHarga = $("#totalHarga").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var bookingFee = $("#bookingFee").val().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var totalHargaMinBookingFee = (totalHarga);
+            var hargaSetelahBookingFee = totalHargaMinBookingFee * (dpBayar / 100);
+            var totalDp = totalHargaMinBookingFee - hargaSetelahBookingFee;
+            $("#totalDp").text(formatRupiah(Math.ceil(hargaSetelahBookingFee).toString(), 'Rp. '));
+            if ($("#bookingFee").val() != '') {
+                $("#totalkeseluruhanHarga").text(formatRupiah(Math.ceil(totalDp).toString(), 'Rp. '));
+            }
+        });
+
+        $("#tanggalDp1").on('change', function () {
+            if ($("#periodeCicilan1").val() != '') {
+                var totalkeseluruhanHarga = $("#totalkeseluruhanHarga1").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+                var cicilanPerBulan = totalkeseluruhanHarga / $("#periodeCicilan1").val();
+                $("#hargaCicilan1").text(formatRupiahPerBulan(Math.ceil(cicilanPerBulan).toString(), 'Rp. '));
+                if ($("#periodeCicilan1").val() <= 11) {
+                    $("#sectionBiayaAdmin1").hide();
+                } else {
+                    $("#sectionBiayaAdmin1").show();
+                }
+                $("#tableCicilan1").find('tbody').empty();
+                for (let i = 1; i <= $("#periodeCicilan1").val(); i++) {
+                    var tanggalCicilan = moment($("#tanggalDp1").val()).add(i, 'months').format('YYYY-MM-DD');
+                    $("#tableCicilan1").find('tbody').append(
+                        `<tr><td style="color:#aa8453">Cicilan ${i}</td>
+                                            <td style="color:#aa8453">${$("#hargaCicilan1").text().replace(" / Bulan", "")}</td>
+                                            <td>
+                                                <input value="${tanggalCicilan}" class="form-control" type="date" name="tglCicilan[]" id="tglCicilan${i}"
+                                                    placeholder="masukan tanggal cicilan" />
+                                            </td></tr>`
+                    );
+                }
+                return;
+            }
+        });
+
+        $("#periodeCicilan1").on('change', function () {
+            var totalkeseluruhanHarga = $("#totalkeseluruhanHarga1").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var cicilanPerBulan = totalkeseluruhanHarga / this.value;
+            $("#hargaCicilan1").text(formatRupiahPerBulan(Math.ceil(cicilanPerBulan).toString(), 'Rp. '));
+            if (this.value <= 11) {
+                $("#sectionBiayaAdmin1").hide();
+            } else {
+                $("#sectionBiayaAdmin1").show();
+            }
+            $("#tableCicilan1").find('tbody').empty();
+            for (let i = 1; i <= this.value; i++) {
+                var tanggalCicilan = moment($("#tanggalDp1").val()).add(i, 'months').format('YYYY-MM-DD');
+                $("#tableCicilan1").find('tbody').append(
+                    `<tr><td style="color:#aa8453">Cicilan ${i}</td>
+                                            <td style="color:#aa8453">${$("#hargaCicilan1").text().replace(" / Bulan", "")}</td>
+                                            <td>
+                                                <input value="${tanggalCicilan}" class="form-control" type="date" name="tglCicilan[]" id="tglCicilan${i}"
+                                                    placeholder="masukan tanggal cicilan" />
+                                            </td></tr>`
+                );
+            }
+            return;
+        });
+
+        $("#tanggalDp").on('change', function () {
+            if ($("#periodeCicilan").val() != '') {
+                var totalkeseluruhanHarga = $("#totalkeseluruhanHarga").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+                var cicilanPerBulan = totalkeseluruhanHarga / $("#periodeCicilan").val();
+                $("#hargaCicilan").text(formatRupiahPerBulan(Math.ceil(cicilanPerBulan).toString(), 'Rp. '));
+                if ($("#periodeCicilan").val() <= 11) {
+                    $("#sectionBiayaAdmin").hide();
+                } else {
+                    $("#sectionBiayaAdmin").show();
+                }
+                $("#tableCicilan").find('tbody').empty();
+                for (let i = 1; i <= $("#periodeCicilan").val(); i++) {
+                    var tanggalCicilan = moment($("#tanggalDp").val()).add(i, 'months').format('YYYY-MM-DD');
+                    $("#tableCicilan").find('tbody').append(
+                        `<tr><td style="color:#aa8453">Cicilan ${i}</td>
+                                            <td style="color:#aa8453">${$("#hargaCicilan").text().replace(" / Bulan", "")}</td>
+                                            <td>
+                                                <input value="${tanggalCicilan}" class="form-control" type="date" name="tglCicilan[]" id="tglCicilan${i}"
+                                                    placeholder="masukan tanggal cicilan" />
+                                            </td></tr>`
+                    );
+                }
+                return;
+            }
+        });
+
+        $("#periodeCicilan").on('change', function () {
+            var totalkeseluruhanHarga = $("#totalkeseluruhanHarga").text().trim().replaceAll("Rp. ", "").replaceAll(".", "");
+            var cicilanPerBulan = totalkeseluruhanHarga / this.value;
+            $("#hargaCicilan").text(formatRupiahPerBulan(Math.ceil(cicilanPerBulan).toString(), 'Rp. '));
+            if (this.value <= 11) {
+                $("#sectionBiayaAdmin").hide();
+            } else {
+                $("#sectionBiayaAdmin").show();
+            }
+            $("#tableCicilan").find('tbody').empty();
+            for (let i = 1; i <= this.value; i++) {
+                var tanggalCicilan = moment($("#tanggalDp").val()).add(i, 'months').format('YYYY-MM-DD');
+                $("#tableCicilan").find('tbody').append(
+                    `<tr><td style="color:#aa8453">Cicilan ${i}</td>
+                                            <td style="color:#aa8453">${$("#hargaCicilan").text().replace(" / Bulan", "")}</td>
+                                            <td>
+                                                <input value="${tanggalCicilan}" class="form-control" type="date" name="tglCicilan[]" id="tglCicilan${i}"
+                                                    placeholder="masukan tanggal cicilan" />
+                                            </td></tr>`
+                );
+            }
+            return;
+        });
+
+        $("#caraBayar1").on('change', function () {
+            if (this.value == 1) {
+                $("#lblTglAngsuran1").show();
+                $("#inputTglAngsuran1").show();
+                $("#sectionTunaiBertahap1").hide();
+            } else if (this.value == 2) {
+                $("#lblTglAngsuran1").hide();
+                $("#inputTglAngsuran1").hide();
+                $("#sectionTunaiBertahap1").show();
+            }
+        });
+
+        $("#caraBayar").on('change', function () {
+            if (this.value == 1) {
+                $("#lblTglAngsuran").show();
+                $("#inputTglAngsuran").show();
+                $("#sectionTunaiBertahap").hide();
+            } else if (this.value == 2) {
+                $("#lblTglAngsuran").hide();
+                $("#inputTglAngsuran").hide();
+                $("#sectionTunaiBertahap").show();
+            }
+        });
+
+        function PrintElem(elem) {
+            for (const option of document.querySelectorAll('option:checked')) {
+                option.setAttribute('selected', '')
+            }
+            Popup($('<div/>').append($(elem).clone()).html());
+        }
+
+        function Popup(data) {
+            var mywindow = window.open('', 'Simulasi Sistem Pembayaran', 'height=3508,width=2480');
+            mywindow.document.write('<html><head><title>Simulasi Sistem Pembayaran</title>');
+            mywindow.document.write(`<link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed&family=Gilda+Display&display=swap">`);
+            mywindow.document.write(`<link rel="stylesheet" href="https://onasistownhouse.com/css/plugins.css" />`);
+            mywindow.document.write(`<link rel="stylesheet" href="https://onasistownhouse.com/css/style6.css" />`);
+            mywindow.document.write(`<link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />`);
+            mywindow.document.write('</head><body >');
+            mywindow.document.write(data);
+            mywindow.document.write('</body></html>');
+            mywindow.document.getElementById('alamatLengkap').innerHTML = $("#alamatLengkap").val() ?? '';
+            mywindow.document.getElementById('catatan').innerHTML = $("#catatan").val() ?? '';
+            const box = mywindow.document.getElementById('footerCard');
+            box.style.display = 'none';
+            const boxRadioPembeli = mywindow.document.getElementById('sectionRadioDataPembeli');
+            boxRadioPembeli.style.display = 'none';
+            mywindow.print();
+            mywindow.close();
+            return true;
+        }
+
+        function PrintElem1(elem) {
+            for (const option of document.querySelectorAll('option:checked')) {
+                option.setAttribute('selected', '')
+            }
+            Popup1($('<div/>').append($(elem).clone()).html());
+        }
+
+        function Popup1(data) {
+            var mywindow = window.open('', 'Simulasi Sistem Pembayaran', 'height=3508,width=2480');
+            mywindow.document.write('<html><head><title>Simulasi Sistem Pembayaran</title>');
+            mywindow.document.write(`<link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap">`);
+            mywindow.document.write(`<link rel="stylesheet" href="https://onasistownhouse.com/css/plugins.css" />`);
+            mywindow.document.write(`<link rel="stylesheet" href="https://onasistownhouse.com/css/style6.css" />`);
+            mywindow.document.write(`<link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />`);
+            mywindow.document.write('</head><body >');
+            mywindow.document.write(data);
+            mywindow.document.write('</body></html>');
+            mywindow.document.getElementById('alamatLengkap').innerHTML = $("#alamatLengkap").val() ?? '';
+            mywindow.document.getElementById('catatan').innerHTML = $("#catatan").val() ?? '';
+            mywindow.document.getElementById('alamatLengkap1').innerHTML = $("#alamatLengkap1").val() ?? '';
+            mywindow.document.getElementById('catatan1').innerHTML = $("#catatan1").val() ?? '';
+            const box = mywindow.document.getElementById('footerCard');
+            box.style.display = 'none';
+            const boxRadioPembeli = mywindow.document.getElementById('sectionRadioDataPembeli');
+            boxRadioPembeli.style.display = 'none';
+            mywindow.print();
+            mywindow.close();
+            return true;
+        }
+
+
+        $("#btnPrint1").on('click', function () {
+            cetakFormulirPemesanan();
+            // PrintElem1('#printData');
+        });
+        $("#btnPrint").on('click', function () {
+            cetakFormulirPemesananManual();
+        });
+        function radio1Clicked() {
+            $("#bodyRadio2").slideDown("slow");
+            $("#bodyRadio2").hide(1000);
+            $("#bodyRadio1").slideUp("slow");
+            $("#bodyRadio1").show(1000);
+            $("#btnPrint1").show();
+            $("#btnPrint").hide();
+        }
+        function radio2Clicked() {
+            $("#bodyRadio1").slideDown("slow");
+            $("#bodyRadio1").hide(1000);
+            $("#bodyRadio2").slideUp("slow");
+            $("#bodyRadio2").show(1000);
+            $("#btnPrint1").hide();
+            $("#btnPrint").show();
+        }
+        var statusPembeli = false;
+        function radio3Clicked() {
+            $("#sectionPembeli").show(1000);
+            statusPembeli = true;
+        }
+        function radio4Clicked() {
+            $("#sectionPembeli").hide(1000);
+            statusPembeli = false;
+        }
+        function radio5Clicked() {
+            $("#sectionPembeli1").show(1000);
+            statusPembeli = true;
+        }
+        function radio6Clicked() {
+            $("#sectionPembeli1").hide(1000);
+            statusPembeli = false;
+        }
+        /* Fungsi */
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
+
+        function formatRupiahPerBulan(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah + ' / Bulan' : '');
+        }   
+
+        function cetakFormulirPemesananManual(){
+            var cicilanKe = "";
+            var nominal = "";
+            var tglCicilan = "";
+            for (let i = 1; i <= $("#periodeCicilan1 option:selected").val(); i++) {
+                cicilanKe += `Cicilan ${i}`;
+                nominal += `${$("#hargaCicilan1").text().replace(" / Bulan", "")}`;
+                tglCicilan += `${moment($(`#tglCicilan${i}`).val()).format('DD MMMM YYYY')}`;
+                if (i < $("#periodeCicilan1 option:selected").val()) {
+                    cicilanKe += "\n";
+                    nominal += "\n";
+                    tglCicilan += "\n";
+                }
+            }
+            var vmCetakFormulirPemesananRumah = {
+                "namaProperty": $("#property1").val(),
+                "tipeProperty": $("#tipeProperty1").val(),
+                "tglHariIni": $("#tanggal").val(),
+                "caraBayar": `${$("#caraBayar1 option:selected").text()} ${$("#periodeCicilan1 option:selected").text() == '-- Pilih Periode Cicilan --' ? '' : $("#periodeCicilan1 option:selected").text()}`,
+                "statusCaraBayar": $("#caraBayar1 option:selected").val() == 2,
+                "discount": $("#discount1").val(),
+                "hargaProperty": $("#hargaJual1").val(),
+                "dp": $("#totalDp1").text(),
+                "tglDp": moment($("#tanggalDp1").val()).format('DD MMMM YYYY'),
+                "bookingFee": $("#bookingFee1").val(),
+                "tglBookingFee": moment($("#tanggalBooking1").val()).format('DD MMMM YYYY'),
+                "kenaAdmin": $("#periodeCicilan1 option:selected").val() > 11,
+                "cicilan": $("#hargaCicilan1").text(),
+                "cicilanKe": cicilanKe,
+                "nominal": nominal,
+                "tglCicilan": tglCicilan,
+                "totalAngsuran": $("#totalkeseluruhanHarga1").text(),
+                "namaMarketing": $("#namaMarketing1").val(),
+                "namaPembeli": $("#namaPembeli1").val(),
+                "noKtp": $("#nomorKtp1").val(),
+                "noTelpon": `+62${$("#nomerTelpon1").val()}`,
+                "alamatPembeli": $("#alamatLengkap1").val(),
+                "catatanPembeli":$("#catatan1").val(),
+                "dataPembeli": statusPembeli,
+                "luasTanah": `${$("#luasTanah1").val()} (m²)`,
+                "luasBangunan":`${$("#luasBangunan1").val()} (m²)`,
+                "tglAngsuran": moment($("#tanggalAngsuran1").val()).format('DD MMMM YYYY')
+            };
+            $.ajax({
+                method: "POST",
+                url: `/property/cetakFormulirPemesananManual`,
+                data: JSON.stringify(vmCetakFormulirPemesananRumah),
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                success: function (data, textStatus, jqXHR) {
+                    var base64 = `data:application/pdf;base64,${data.file}`;
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = base64;
+                    downloadLink.download = data.filename;
+                    downloadLink.click();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        }
+
+        function cetakFormulirPemesanan() {
+            var cicilanKe = "";
+            var nominal = "";
+            var tglCicilan = "";
+            for (let i = 1; i <= $("#periodeCicilan option:selected").val(); i++) {
+                cicilanKe += `Cicilan ${i}`;
+                nominal += `${$("#hargaCicilan").text().replace(" / Bulan", "")}`;
+                tglCicilan += `${moment($(`#tglCicilan${i}`).val()).format('DD MMMM YYYY')}`;
+                if (i < $("#periodeCicilan option:selected").val()) {
+                    cicilanKe += "\n";
+                    nominal += "\n";
+                    tglCicilan += "\n";
+                }
+            }
+            var vmCetakFormulirPemesananRumah = {
+                "namaProperty": $("#property option:selected").text(),
+                "tipeProperty": $("#tipeProperty option:selected").text(),
+                "tglHariIni": $("#tanggal").val(),
+                "caraBayar": `${$("#caraBayar option:selected").text()} ${$("#periodeCicilan option:selected").text() == '-- Pilih Periode Cicilan --' ? '' : $("#periodeCicilan option:selected").text()}`,
+                "statusCaraBayar": $("#caraBayar option:selected").val() == 2,
+                "discount": $("#discount").val(),
+                "hargaProperty": $("#hargaJual").text(),
+                "dp": $("#totalDp").text(),
+                "tglDp": moment($("#tanggalDp").val()).format('DD MMMM YYYY'),
+                "bookingFee": $("#bookingFee").val(),
+                "tglBookingFee": moment($("#tanggalBooking").val()).format('DD MMMM YYYY'),
+                "kenaAdmin": $("#periodeCicilan option:selected").val() > 11,
+                "cicilan": $("#hargaCicilan").text(),
+                "cicilanKe": cicilanKe,
+                "nominal": nominal,
+                "tglCicilan": tglCicilan,
+                "totalAngsuran": $("#totalkeseluruhanHarga").text(),
+                "namaMarketing": $("#namaMarketing").val(),
+                "namaPembeli": $("#namaPembeli").val(),
+                "noKtp": $("#nomorKtp").val(),
+                "noTelpon": `+62${$("#nomerTelpon").val()}`,
+                "alamatPembeli": $("#alamatLengkap").val(),
+                "catatanPembeli":$("#catatan").val(),
+                "dataPembeli": statusPembeli,
+                "luasTanah": $("#luasTanah").text(),
+                "luasBangunan":$("#luasBangunan").text(),
+                "tglAngsuran": moment($("#tanggalAngsuran").val()).format('DD MMMM YYYY')
+            };
+            $.ajax({
+                method: "POST",
+                url: `/property/cetakFormulirPemesanan/${$("#property option:selected").val()}`,
+                data: JSON.stringify(vmCetakFormulirPemesananRumah),
+                processData: false,
+                contentType: "application/json; charset=utf-8",
+                success: function (data, textStatus, jqXHR) {
+                    var base64 = `data:application/pdf;base64,${data.file}`;
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = base64;
+                    downloadLink.download = data.filename;
+                    downloadLink.click();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

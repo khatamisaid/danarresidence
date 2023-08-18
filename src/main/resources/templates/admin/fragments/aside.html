@@ -1,0 +1,204 @@
+<aside id="cappa-aside" th:fragment="sidebar">
+    <style>
+        label {
+            color: #aa8453;
+        }
+
+        input {
+            color: #1b1b1b !important;
+        }
+    </style>
+    <!-- Logo -->
+    <div class="cappa-logo">
+        <a th:href="@{/admin}">
+            <!-- <img src="img/logo-dark.png" class="logo-img" alt="Image Not Found"> -->
+            <div>
+                <i class="star"></i>
+                <i class="star"></i>
+                <i class="star"></i>
+                <i class="star"></i>
+                <i class="star"></i>
+            </div>
+            <th:block th:utext="${websiteName}"></th:block>
+            <!-- <h2>Onasis<span>Town House</span></h2> -->
+        </a>
+    </div>
+    <!-- Menu -->
+    <nav class="cappa-main-menu">
+        <ul>
+            <li style="cursor: pointer;"
+                th:classappend="${#httpServletRequest.getRequestURI() == '/admin/managementUser' ? 'active':''}"
+                th:if="${session.role == 'Super User'}"><a th:href='@{/admin/managementUser}'>User
+                    Management</a></li>
+            <li style="cursor: pointer;" class='cappa-sub'><a href='#'>Property</a>
+                <ul>
+                    <li th:if="${session.role == 'Super User' || session.role == 'Admin'}" style="cursor: pointer;"
+                        th:classappend="${#httpServletRequest.getRequestURI() == '/admin/wilayah' ? 'active':''}">
+                        <a th:href='@{/admin/wilayah}'>Wilayah</a>
+                    </li>
+                    <li th:if="${session.role == 'Super User' || session.role == 'Admin'}" style="cursor: pointer;"
+                        th:classappend="${#httpServletRequest.getRequestURI() == '/admin/tambahProperty' ? 'active':''}">
+                        <a th:href='@{/admin/tambahProperty}'><i class="ti-plus"></i> Tambah Property</a>
+                    </li>
+                    <li th:classappend="${#httpServletRequest.getRequestURI()} == ${menu.url} ? 'active':''"
+                        th:each="menu:${menus}"><a th:href="@{${menu.url}}" th:text="${menu.text}"></a></li>
+                </ul>
+            </li>
+            <li th:if="${session.role == 'Super User'}" style="cursor: pointer;" class='cappa-sub'><a
+                    href='#'>Pengaturan Website</a>
+                <ul>
+                    <li style="cursor: pointer;"
+                        th:classappend="${#httpServletRequest.getRequestURI() == '/admin/judul_website' ? 'active':''}">
+                        <a th:href='@{/admin/judul_website}'>Judul Website</a>
+                    </li>
+                    <li style="cursor: pointer;"
+                        th:classappend="${#httpServletRequest.getRequestURI() == '/admin/photo_background' ? 'active':''}">
+                        <a th:href='@{/admin/photo_background}'>Photo Background</a>
+                    </li>
+                    <li style="cursor: pointer;"
+                        th:classappend="${#httpServletRequest.getRequestURI() == '/admin/video_animasi' ? 'active':''}">
+                        <a th:href='@{/admin/video_animasi}'>Video Animasi</a>
+                    </li>
+                </ul>
+            </li>
+            <li th:classappend="${#httpServletRequest.getRequestURI() == '/admin/kontak_whatsapp' ? 'active':''}"><a
+                th:href='@{/admin/kontak_whatsapp}'>Kontak WhatsApp</a></li>
+            <li th:classappend="${#httpServletRequest.getRequestURI() == '/admin/simulasi_sistem_pembayaran' ? 'active':''}"><a
+                    th:href='@{/admin/simulasi_sistem_pembayaran}'>Simulasi Sistem Pembayaran</a></li>
+        </ul>
+    </nav>
+    <!-- Sidebar Footer -->
+    <div class="cappa-footer">
+        <div class="footer-column footer-contact">
+            <div class="footer-contact-info">
+                <div onclick="logout()" class="reservations" style="cursor: pointer;">
+                    <div class="icon"><span class="ti-power-off"></span></div>
+                    <div class="text">
+                        <p>Keluar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="modal fade" id="modalTambahProperty" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 style="color:#aa8453;" class="modal-title" id="headerTambahProperty">Tambah Property</h4>
+                    <button type="button" class="close" onclick="closeModal('modalTambahProperty')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" id="formTambahPropery">
+                        <div class="form-group">
+                            <label for="namaProperty">Nama Property</label>
+                            <input placeholder="masukan nama property" type="text" class="form-control-sm"
+                                id="namaProperty" name="namaProperty" />
+                        </div>
+                        <div class="form-group">
+                            <label for="wilayahProperty">Wilayah Property</label>
+                            <select name="wilayahProperty" id="wilayahProperty" class="custom-select">
+                                <option value="">-- Pilih Wilayah Property--</option>
+                                <option th:each="wilayah: ${listWilayah}" th:text="${wilayah.namaWilayah}"
+                                    th:value="${wilayah.idWilayah}"></option>
+                            </select>
+                        </div>
+                        <h5 style="color:#aa8453">Pilih Fasilitas Property</h5>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="checkBoxUniversitas">
+                                <label class="form-check-label" for="checkBoxUniversitas">Universitas</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="inputanUniversitas" style="display: none;">
+                            <label for="namaProperty">Masukan universitas terdekat</label>
+                            <textarea style="color: #1b1b1b;" placeholder="masukan universitas terdekat" type="text"
+                                class="form-control-sm" id="universitas" name="universitas"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="checkBoxSekolah">
+                                <label class="form-check-label" for="checkBoxSekolah">Sekolah</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="inputanSekolah" style="display: none;">
+                            <label for="namaProperty">Masukan sekolah terdekat</label>
+                            <textarea style="color: #1b1b1b;" placeholder="masukan sekolah terdekat" type="text"
+                                class="form-control-sm" id="sekolah" name="sekolah"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bannerProperty">Tambahkan untuk banner Property</label>
+                            <input placeholder="masukan banner property" type="file" class="form-control-sm"
+                                accept="image/jpeg, image/png" id="bannerProperty" name="bannerProperty" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('modalTambahProperty')">Tutup</button>
+                    <button id="btnTambahProperty" style="background-color: #aa8453; color: white;" type="button"
+                        class="btn">Tambah
+                        Property</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="modal" id="modalTambahWilayah" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 style="color:#aa8453;" class="modal-title" id="exampleModalLabel">Tambah Wilayah</h4>
+                    <button type="button" class="close" onclick="closeModal('modalTambahWilayah')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" id="formTambahWilayah">
+                        <div class="form-group">
+                            <label for="namaProperty">Nama Wilayah</label>
+                            <input placeholder="masukan nama property" type="text" class="form-control-sm"
+                                id="namaWilayah" name="namaWilayah" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('modalTambahWilayah')">Tutup</button>
+                    <button id="btnTambahWilayah" style="background-color: #aa8453; color: white;" type="button"
+                        class="btn">Tambah
+                        Wilayah</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script th:inline="javascript">
+        $("#btnTambahWilayah").on('click', function () {
+            var url = `/wilayah?namaWilayah=${$("#namaWilayah").val()}`;
+            $.post(url, function (data) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Berhasil menambahkan wilayah',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(function () {
+                    window.location.reload();
+                });
+            });
+        });
+        
+        function logout() {
+            window.location.href = "/logout";
+        }
+        function openModalTambahWilayah() {
+            $("#modalTambahWilayah").toggle('modal');
+        }
+        function closeModal(id) {
+            $(`#${id}`).toggle('modal');
+        }
+    </script>
+</aside>

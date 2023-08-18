@@ -1,0 +1,79 @@
+package com.dreamtown.danarresidence.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.dreamtown.danarresidence.entity.ContactPerson;
+import com.dreamtown.danarresidence.entity.LogWhatsApp;
+import com.dreamtown.danarresidence.repository.ContactPersonRepository;
+import com.dreamtown.danarresidence.repository.LogAktivitasRepository;
+import com.dreamtown.danarresidence.repository.LogWhatsAppRepository;
+import com.dreamtown.danarresidence.utils.Utils;
+
+import static org.springframework.http.MediaType.*;
+
+@Controller
+@RequestMapping(value = "/log")
+public class LogController {
+
+    @Autowired
+    private ContactPersonRepository cpRepository;
+
+    @Autowired
+    private LogWhatsAppRepository logWhatsAppRepository;
+
+    @Autowired
+    private LogAktivitasRepository logAktivitasRepository;
+
+    @Autowired
+    private Utils utils;
+
+    @RequestMapping(value = "/whatsapp/findById/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ContactPerson> findById(@PathVariable Integer id) {
+        return new ResponseEntity<>(cpRepository.findById(id).get(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/whatsapp", method = RequestMethod.GET)
+    public ResponseEntity<List<Object[]>> get_log_whatsapp(String tglDari, String tglSampai) {
+        return new ResponseEntity<>(logWhatsAppRepository.logWhatsApp(tglDari.replace("-", ""),
+                tglSampai.replace("-", "")), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/aktivitas", method = RequestMethod.GET)
+    public ResponseEntity<Map> get_log_aktivitas() {
+        return new ResponseEntity<>(utils.logAktivitas(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/activity", method = RequestMethod.GET)
+    public ResponseEntity<Map> get_log_activity(String tglDari, String tglSampai, String tglHariIni) {
+        Map res = new HashMap<>();
+        res.put("totalKeseluruhan", logAktivitasRepository.logHariBetween(tglDari.replace("-", ""),
+        tglSampai.replace("-", "")));
+        res.put("totalHariIni", logAktivitasRepository.logHariBetween(tglHariIni.replace("-", ""),
+                tglSampai.replace("-", "")));
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/whatsapp", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map> logWhatsApp(@RequestBody ContactPerson cp) {
+        Map res = new HashMap();
+        logWhatsAppRepository.save(new LogWhatsApp(null, cp.getNomorTelpon(),
+                cp.getNamaContact()));
+        res.put("messages", "Sukses Log WhatsApp");
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+}
