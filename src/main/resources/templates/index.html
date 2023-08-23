@@ -89,7 +89,6 @@
                 "delay": 5000
                 }}'>
                 <div class="swiper-wrapper">
-
                     <div th:each="photo, iter : ${website.listWebsitePhoto}" class="swiper-slide">
                         <div class="image-layer-three"
                             th:style="'background-image: url(/loadfile/' + ${photo.namaPhoto} + ');'"></div>
@@ -320,7 +319,7 @@
         <!--Video One End-->
 
         <!--About Three Start-->
-        <section class="about-three">
+        <section class="about-one">
             <div class="about-three__shape-2 float-bob-y"></div>
             <div class="container">
                 <div class="row">
@@ -352,52 +351,66 @@
         <!--About Three End-->
 
         <!--Counter Two Start-->
-        <section class="counter-two">
-            <div class="counter-two__shape-1 float-bob-x">
-                <img src="assets/images/shapes/counter-two-shape-1.png" alt="">
+        <section class="counter-one">
+            <div class="counter-one__bg float-bob-x">
+                <img th:src="@{/assets/images/backgrounds/counter-one-bg-img-1.png}" alt="">
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-12">
-                        <div class="counter-two__inner">
-                            <ul class="list-unstyled counter-two__list">
-                                <li class="counter-two__single wow fadeInLeft" data-wow-delay="100ms">
-                                    <div class="counter-two__icon">
-                                        <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/cash.png}"
+                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp animated" data-wow-delay="100ms" style="visibility: visible; animation-delay: 100ms; animation-name: fadeInUp;">
+                        <div class="counter-one__single">
+                            <div class="counter-one__top">
+                                <div class="counter-one__shape"></div>
+                                <div class="counter-one__icon">
+                                    <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/cash.png}"
                                             alt="Image Not Found" srcset="">
-                                    </div>
-                                    <div class="counter-two__content-box">
-                                        <p class="counter-two__text" style="color: black;">Tidak Ada Bunga</p>
-                                    </div>
-                                </li>
-                                <li class="counter-two__single wow fadeInLeft" data-wow-delay="200ms">
-                                    <div class="counter-two__icon">
-                                        <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/discount.png}"
+                                </div>
+                            </div>
+                            <div class="counter-one__count-box">
+                                <p class="counter-one__text">Tidak Ada Bunga</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp animated" data-wow-delay="100ms" style="visibility: visible; animation-delay: 100ms; animation-name: fadeInUp;">
+                        <div class="counter-one__single">
+                            <div class="counter-one__top">
+                                <div class="counter-one__shape"></div>
+                                <div class="counter-one__icon">
+                                    <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/discount.png}"
                                             alt="Image Not Found" srcset="">
-                                    </div>
-                                    <div class="counter-two__content-box">
-                                        <p class="counter-two__text" style="color: black;">Pasti Ada Discount</p>
-                                    </div>
-                                </li>
-                                <li class="counter-two__single wow fadeInLeft" data-wow-delay="300ms">
-                                    <div class="counter-two__icon">
-                                        <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/pusatkota.png}"
+                                </div>
+                            </div>
+                            <div class="counter-one__count-box">
+                                <p class="counter-one__text">Pasti Ada Discount</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp animated" data-wow-delay="100ms" style="visibility: visible; animation-delay: 100ms; animation-name: fadeInUp;">
+                        <div class="counter-one__single">
+                            <div class="counter-one__top">
+                                <div class="counter-one__shape"></div>
+                                <div class="counter-one__icon">
+                                    <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/pusatKota.png}"
                                             alt="Image Not Found" srcset="">
-                                    </div>
-                                    <div class="counter-two__content-box">
-                                        <p class="counter-two__text" style="color: black;">Lokasi Pusat Kota</p>
-                                    </div>
-                                </li>
-                                <li class="counter-two__single wow fadeInLeft" data-wow-delay="400ms">
-                                    <div class="counter-two__icon">
-                                        <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/hargamurah.png}"
+                                </div>
+                            </div>
+                            <div class="counter-one__count-box">
+                                <p class="counter-one__text">Lokasi Pusat Kota</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp animated" data-wow-delay="100ms" style="visibility: visible; animation-delay: 100ms; animation-name: fadeInUp;">
+                        <div class="counter-one__single">
+                            <div class="counter-one__top">
+                                <div class="counter-one__shape"></div>
+                                <div class="counter-one__icon">
+                                    <img style="width: 90px; margin-bottom: 20px;" th:src="@{/icons/hargamurah.png}"
                                             alt="Image Not Found" srcset="">
-                                    </div>
-                                    <div class="counter-two__content-box">
-                                        <p class="counter-two__text" style="color: black;">100% Harga Paling Murah</p>
-                                    </div>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
+                            <div class="counter-one__count-box">
+                                <p class="counter-one__text">100% Harga Paling Murah</p>
+                            </div>
                         </div>
                     </div>
                 </div>
