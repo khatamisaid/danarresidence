@@ -14,7 +14,6 @@ import org.springframework.data.domain.Example;
 import com.dreamtown.danarresidence.entity.MWilayah;
 import com.dreamtown.danarresidence.entity.Property;
 import com.dreamtown.danarresidence.entity.PropertyDetails;
-import com.dreamtown.danarresidence.entity.PropertyStatus;
 import com.dreamtown.danarresidence.repository.MWilayahRepository;
 import com.dreamtown.danarresidence.repository.PropertyDetailsRepository;
 import com.dreamtown.danarresidence.repository.PropertyRepository;
@@ -28,7 +27,7 @@ public class PropertyService {
     @Autowired
     private MWilayahRepository mWilayahRepository;
 
-    public Page<Property> findPaginated(Pageable pageable, Integer idWilayah) {
+    public Page<Property> findPaginated(Pageable pageable, Integer idWilayah) throws IllegalArgumentException {
         Property p = new Property();
         p.setWilayah(new MWilayah(idWilayah, null));
         Example<Property> exampleProperty = Example.of(p);
@@ -38,7 +37,7 @@ public class PropertyService {
         return new PageImpl<>(listProperty.subList(s, e), pageable, listProperty.size());
     }
 
-    public Page<Property> listRekomendasi(Pageable pageable, Boolean isAdmin, String area, String sortBy) {
+    public Page<Property> listRekomendasi(Pageable pageable, Boolean isAdmin, String area, String sortBy) throws IllegalArgumentException {
         List<Property> tempListProperty = new ArrayList<Property>();
         if (area.equalsIgnoreCase("")) {
             tempListProperty = propertyRepository.findAll();

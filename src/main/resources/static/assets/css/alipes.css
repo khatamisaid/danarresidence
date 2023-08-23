@@ -21,15 +21,15 @@
   --alipes-font: 'Manrope', sans-serif;
   --alipes-font-two: 'Teko', sans-serif;
   --alipes-reey-font: "reeyregular";
-  --alipes-gray: #827e78;
+  --alipes-gray: #EB6440;
   --alipes-gray-rgb: 130, 126, 120;
   --alipes-white: #ffffff;
   --alipes-white-rgb: 255, 255, 255;
-  --alipes-base: #cd8c66;
+  --alipes-base: #D6E4E5;
   --alipes-base-rgb: 205, 140, 102;
-  --alipes-black: #221c13;
+  --alipes-black: #497174;
   --alipes-black-rgb: 34, 28, 19;
-  --alipes-primary: #f6f4f1;
+  --alipes-primary: #EFF5F5;
   --alipes-primary-rgb: 246, 244, 241;
   --alipes-letter-spacing: 0.1em;
 
@@ -542,7 +542,7 @@ ul {
 
 .main-header__top-time {
   font-size: 13px;
-  color: #7a736a;
+  color: #ffffff;
 }
 
 .main-header__top-right {
@@ -585,11 +585,11 @@ ul {
 .main-header__contact-list li .text p {
   font-size: 13px;
   font-weight: 500;
-  color: #7a736a;
+  color: #ffffff;
 }
 
 .main-header__contact-list li .text p a {
-  color: #7a736a;
+  color: #ffffff;
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
 }
@@ -2288,7 +2288,7 @@ ul {
   font-family: var(--alipes-font-two);
   text-transform: uppercase;
   letter-spacing: var(--alipes-letter-spacing);
-  color: var(--alipes-base);
+  color: var(--alipes-black);
   padding-left: 50px;
   padding-right: 70px;
   padding-top: 13px;
@@ -2337,7 +2337,7 @@ ul {
 
 .main-slider-three__details-text {
   font-size: 18px;
-  color: #7a736a;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: var(--alipes-letter-spacing);
   font-family: var(--alipes-font-two);
@@ -4442,7 +4442,7 @@ ul {
   display: inline-block;
   font-size: 15px;
   font-weight: 400;
-  color: #7a736a;
+  color: #ffffff;
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
   z-index: 1;
@@ -4482,7 +4482,7 @@ ul {
   font-size: 15px;
   font-weight: 500;
   line-height: 30px;
-  color: #7a736a;
+  color: #ffffff;
   padding-top: 1px;
 }
 
@@ -4557,7 +4557,7 @@ ul {
   outline: none;
   font-size: 13px;
   font-weight: 500;
-  color: #7a736a;
+  color: #ffffff;
   border: none;
   padding-left: 30px;
   padding-right: 30px;
@@ -4604,17 +4604,17 @@ ul {
   font-size: 15px;
   font-weight: 500;
   line-height: 26px;
-  color: #7a736a;
+  color: #ffffff;
 }
 
 .site-footer__bottom-text a {
-  color: #7a736a;
+  color: #ffffff;
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
 }
 
 .site-footer__bottom-text a:hover {
-  color: var(--alipes-base);
+  color: var(--alipes-gray);
 }
 
 .site-footer__bottom-right {
