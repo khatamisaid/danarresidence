@@ -1504,7 +1504,7 @@ ul {
 }
 
 .stricky-header.main-menu-two {
-  background-color: var(--alipes-black);
+  background-color: var(--alipes-gray);
 }
 
 .main-menu-two__wrapper {
@@ -4358,7 +4358,7 @@ ul {
 .site-footer {
   position: relative;
   display: block;
-  background-color: var(--alipes-black);
+  background-color: var(--alipes-gray);
   z-index: 1;
 }
 
