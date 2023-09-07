@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin
 
-Sitemap: https://mandalaresidences.com/sitemap.xml
+Sitemap: https://danarresidence.com/sitemap.xml
