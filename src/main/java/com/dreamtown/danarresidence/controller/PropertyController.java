@@ -242,7 +242,7 @@ public class PropertyController {
         List<ViewModelCetakFormulirPemesananRumah> list = new ArrayList<>();
         list.add(vmCetakRumah);
         Map<String, Object> parameter = new HashMap<>();
-        parameter.put("logo", getClass().getResourceAsStream("/static/img/logo_melia_hd.png"));
+        parameter.put("logo", getClass().getResourceAsStream("/static/img/favicon.png"));
         cetakFormulirPemesananRumah.writePdfManual(list, path, parameter);
         InputStream inputStream = new FileInputStream(path);
         byte[] out = org.apache.commons.io.IOUtils.toByteArray(inputStream);
